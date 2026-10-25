@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import 'leaflet/dist/leaflet.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-base: #0D0B0A;
+  --bg-surface: #17120F;
+  --bg-raised: #211A15;
+  --border-subtle: #33281F;
+  --text-primary: #F5EFE8;
+  --text-muted: #A89684;
+  --accent-main: #8B5E3C;
+  --accent-light: #B07A4F;
+  --accent-dark: #67442B;
+}
+
+:root.light {
+  --bg-base: #F6F8FA;
+  --bg-surface: #FFFFFF;
+  --bg-raised: #EEF2F6;
+  --border-subtle: #D5DCE4;
+  --text-primary: #101820;
+  --text-muted: #5A6A7E;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-feature-settings: 'tnum' 1, 'cv02' 1, 'cv03' 1, 'cv04' 1;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+/* Tabular numerals for data stability */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-main);
+}
+
+/* Leaflet dark & light adaptations */
+.leaflet-container {
+  background: var(--bg-surface) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+:root.dark .leaflet-tile {
+  filter: brightness(0.7) invert(1) contrast(1.8) hue-rotate(180deg) saturate(0.3);
+}
+
+:root.light .leaflet-tile {
+  filter: none;
+}
+
+:root.dark .leaflet-popup-content-wrapper,
+:root.dark .leaflet-popup-tip {
+  background: #211A15 !important;
+  color: #F5EFE8 !important;
+  border: 1px solid #33281F !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+:root.light .leaflet-popup-content-wrapper,
+:root.light .leaflet-popup-tip {
+  background: #FFFFFF !important;
+  color: #101820 !important;
+  border: 1px solid #D5DCE4 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
+}
