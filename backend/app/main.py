@@ -211,7 +211,7 @@ def get_me(user: Dict[str, Any] = Depends(get_current_user)):
 class CreateEpisodeRequest(BaseModel):
     scenario: str = "cascade"  # noise, gateway_failure, isolated_flood, cascade, monsoon_shift
     seed: int = 42
-    duration_min: int = 30
+    duration_min: int = 11
 
 
 @app.post("/episodes")

@@ -17,7 +17,7 @@ interface LabProps {
 export const Lab: React.FC<LabProps> = ({ onSelectEpisode }) => {
   // Twin test state
   const [twinPrefix, setTwinPrefix] = useState('cascade');
-  const [twinSplit, setTwinSplit] = useState(8);
+  const [twinSplit, setTwinSplit] = useState(7);
   const [twinSeed, setTwinSeed] = useState(777);
   const [twinLoading, setTwinLoading] = useState(false);
   const [twinResult, setTwinResult] = useState<any>(null);
@@ -112,7 +112,7 @@ export const Lab: React.FC<LabProps> = ({ onSelectEpisode }) => {
               <input
                 type="number"
                 min={3}
-                max={15}
+                max={9}
                 value={twinSplit}
                 onChange={(e) => setTwinSplit(Number(e.target.value))}
                 className="w-14 bg-raised border border-subtle-border rounded px-2 py-1 text-center text-cream"

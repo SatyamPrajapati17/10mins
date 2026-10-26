@@ -64,7 +64,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
         loadAssessments(cascadeEp.id);
       } else {
         // Auto-seed if empty
-        const newEp = await createEpisodeApi('cascade', 42, 30);
+        const newEp = await createEpisodeApi('cascade', 42, 11);
         setSelectedEpisodeId(newEp.episode_id);
         loadAssessments(newEp.episode_id);
       }

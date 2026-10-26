@@ -52,9 +52,9 @@ SENSORS = _build_sensors()
 def generate(
     scenario: str = "cascade",
     seed: int = 42,
-    minutes: int = 30,
+    minutes: int = 11,
     ambiguous_prefix: bool = False,
-    split_min: int = 8
+    split_min: int = 7
 ) -> Tuple[List[Dict[str, Any]], str]:
     """
     Generate deterministic list of events according to the scenario.
@@ -365,16 +365,16 @@ def flip_story(events: List[Dict[str, Any]], source_id: str, from_min: int = 7) 
     return modified
 
 
-def twin(prefix_scenario: str = "cascade", split_min: int = 8, seed: int = 777) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], str]:
+def twin(prefix_scenario: str = "cascade", split_min: int = 7, seed: int = 777, minutes: int = 11) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], str]:
     """
     Generate twin episodes A and B:
     - Exactly identical events for minute <= split_min (guaranteed same hash)
     - After split_min: Twin A evolves as False Alarm (noise/isolated), Twin B evolves as True Cascade.
     """
     # 1. Generate full cascade stream
-    events_full_cascade, _ = generate(scenario="cascade", seed=seed, minutes=30, ambiguous_prefix=True, split_min=split_min)
+    events_full_cascade, _ = generate(scenario="cascade", seed=seed, minutes=minutes, ambiguous_prefix=True, split_min=split_min)
     # 2. Generate full noise/isolated stream with same seed and prefix
-    events_full_benign, _ = generate(scenario="isolated_flood", seed=seed, minutes=30, ambiguous_prefix=True, split_min=split_min)
+    events_full_benign, _ = generate(scenario="isolated_flood", seed=seed, minutes=minutes, ambiguous_prefix=True, split_min=split_min)
 
     # Prefix events (<= split_min) must be byte-for-byte identical
     prefix_events = [e for e in events_full_cascade if e["sim_minute"] <= split_min]

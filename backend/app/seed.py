@@ -1,6 +1,6 @@
 # backend/app/seed.py
 """
-Seed script to pre-populate database with the 5 standard demo episodes and sample authorization requests.
+Seed script to pre-populate database with the 5 standard demo episodes (First 10 minutes) and sample authorization requests.
 """
 
 import json
@@ -10,29 +10,30 @@ from app.db import get_db, init_db
 from app.sim import generate
 from app.engine import run_episode
 
+# FIRST 10 standard crisis episodes: 11 points covering minutes 00 through 10
 DEMO_SCENARIOS = [
-    ("cascade", 42, 30, "Cascading crisis: heavy rainfall leads to drainage failure and hospital surges"),
-    ("gateway_failure", 888, 25, "Gateway G12 failure: heartbeat loss and spurious readings discounted"),
-    ("isolated_flood", 303, 25, "Isolated flood: local blockage in Zone B, contained"),
-    ("noise", 101, 20, "Baseline noise: routine fluctuations across all gateways"),
-    ("monsoon_shift", 505, 25, "Monsoon shift: elevated background rainfall prior")
+    ("cascade", 42, 11, "Cascading crisis: heavy rainfall leads to drainage failure and hospital surges"),
+    ("gateway_failure", 888, 11, "Gateway G12 failure: heartbeat loss and spurious readings discounted"),
+    ("isolated_flood", 303, 11, "Isolated flood: local blockage in Zone B, contained"),
+    ("noise", 101, 11, "Baseline noise: routine fluctuations across all gateways"),
+    ("monsoon_shift", 505, 11, "Monsoon shift: elevated background rainfall prior")
 ]
 
 
-def seed_data():
+def seed_data(force: bool = True):
     init_db()
     conn = get_db()
     now_iso = datetime.now(timezone.utc).isoformat()
 
-    print("Seeding demo episodes...")
+    print("Seeding demo episodes (10-minute crisis windows)...")
     for scen, seed, duration, desc in DEMO_SCENARIOS:
         ep_id = f"ep_{scen[:4]}_{seed}"
 
-        # Check if already seeded
-        existing = conn.execute("SELECT id FROM episodes WHERE id = ?", (ep_id,)).fetchone()
-        if existing:
-            print(f"Episode {ep_id} already exists, skipping.")
-            continue
+        # If forcing refresh or existing duration != duration, delete and re-insert
+        with conn:
+            conn.execute("DELETE FROM events WHERE episode_id = ?", (ep_id,))
+            conn.execute("DELETE FROM assessments WHERE episode_id = ?", (ep_id,))
+            conn.execute("DELETE FROM episodes WHERE id = ?", (ep_id,))
 
         events, truth = generate(scenario=scen, seed=seed, minutes=duration)
         assessments = run_episode(events, monsoon_shift=(scen == "monsoon_shift"))
@@ -64,23 +65,22 @@ def seed_data():
                     (ep_id, a.minute, json.dumps(ad))
                 )
 
-        print(f"Seeded episode: {ep_id} ({scen}, {duration} min, truth={truth})")
+        print(f"Seeded episode: {ep_id} ({scen}, 00-{duration-1:02d} min, truth={truth})")
 
-    # Add a sample authorization request for the supervisor queue
+    # Add a sample authorization request for the supervisor queue at minute 8
     sample_auth_id = "auth_demo_cascade_01"
-    existing_auth = conn.execute("SELECT id FROM authorizations WHERE id = ?", (sample_auth_id,)).fetchone()
-    if not existing_auth:
-        with conn:
-            conn.execute(
-                """INSERT INTO authorizations (id, episode_id, minute, action, requester, justification, status, snapshot_json, created_at)
-                   VALUES (?, 'ep_casc_42', 12, 'ESCALATE', 'officer@demo.first10', 'Widespread inundation reported across Zone A and B with 3 hospital surge alerts.', 'pending', ?, ?)""",
-                (sample_auth_id, json.dumps({"cascade_p": 0.88, "version": 1}), now_iso)
-            )
-        print("Seeded sample pending authorization request.")
+    with conn:
+        conn.execute("DELETE FROM authorizations WHERE id = ?", (sample_auth_id,))
+        conn.execute(
+            """INSERT INTO authorizations (id, episode_id, minute, action, requester, justification, status, snapshot_json, created_at)
+               VALUES (?, 'ep_casc_42', 8, 'ESCALATE', 'officer@demo.first10', 'Widespread inundation reported across Zone A and B with drainage backflow at Minute 8.', 'pending', ?, ?)""",
+            (sample_auth_id, json.dumps({"cascade_p": 0.88, "version": 1}), now_iso)
+        )
+    print("Seeded sample pending authorization request at Minute 08.")
 
     conn.close()
     print("Database seeding completed.")
 
 
 if __name__ == "__main__":
-    seed_data()
+    seed_data(force=True)
