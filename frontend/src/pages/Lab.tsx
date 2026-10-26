@@ -9,6 +9,7 @@ import {
 } from 'recharts';
 import { runTwinTestApi, injectFaultApi, fetchEpisodesApi } from '../lib/api';
 import { Episode } from '../lib/types';
+import { sound } from '../lib/sound';
 
 interface LabProps {
   onSelectEpisode?: (episodeId: string) => void;
@@ -31,11 +32,15 @@ export const Lab: React.FC<LabProps> = ({ onSelectEpisode }) => {
   const [faultResult, setFaultResult] = useState<any>(null);
 
   const handleRunTwin = async () => {
+    sound.playTactileClick();
     setTwinLoading(true);
     setTwinResult(null);
     try {
       const res = await runTwinTestApi(twinPrefix, twinSplit, twinSeed);
       setTwinResult(res);
+      if (res?.passed) {
+        sound.playAuthConfirmation(true);
+      }
     } catch (err: any) {
       alert(`Twin test error: ${err.message}`);
     } finally {
@@ -44,6 +49,7 @@ export const Lab: React.FC<LabProps> = ({ onSelectEpisode }) => {
   };
 
   const handleInjectFault = async () => {
+    sound.playFaultTriggered();
     setFaultLoading(true);
     setFaultResult(null);
     try {

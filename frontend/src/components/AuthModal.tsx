@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { X, ShieldAlert, CheckCircle, XCircle, Clock, AlertTriangle, UserCheck } from 'lucide-react';
 import { ActionType, AuthorizationRequest, User } from '../lib/types';
 import { requestAuthorizationApi, decideAuthorizationApi } from '../lib/api';
+import { sound } from '../lib/sound';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -61,6 +62,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           episodeId
         }
       });
+      sound.playTactileClick();
       setSuccessMsg('Authorization request submitted to supervisor queue.');
       setJustification('');
       onRefreshAuths();
@@ -84,6 +86,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     try {
       await decideAuthorizationApi(authId, decision, decisionReason);
+      sound.playAuthConfirmation(decision === 'approve');
       setSuccessMsg(`Request marked as ${decision.toUpperCase()}. Official record saved.`);
       setDecisionReason('');
       onRefreshAuths();
