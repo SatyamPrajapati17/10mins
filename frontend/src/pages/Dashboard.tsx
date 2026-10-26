@@ -149,9 +149,42 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [assessments.length]);
 
-  // Current and previous assessments
-  const currentAssessment = assessments[currentMinute] || assessments[0];
-  const prevAssessment = currentMinute > 0 ? assessments[currentMinute - 1] : null;
+  // Current and previous assessments (safe fallbacks)
+  const currentAssessment = assessments[currentMinute] || assessments[0] || null;
+  const prevAssessment = currentMinute > 0 ? (assessments[currentMinute - 1] || null) : null;
+
+  // Determine dominant hypothesis safely
+  const dominantKey: HypothesisKey | null = currentAssessment?.belief
+    ? (Object.keys(currentAssessment.belief) as HypothesisKey[]).reduce((a, b) =>
+        currentAssessment.belief[a] > currentAssessment.belief[b] ? a : b
+      )
+    : null;
+
+  // Audio telemetry triggers (Must be called unconditionally at top level)
+  const prevMinuteRef = useRef(currentMinute);
+  const prevDominantRef = useRef<HypothesisKey | null>(null);
+  const prevActionRef = useRef<ActionType | null>(null);
+
+  useEffect(() => {
+    if (prevMinuteRef.current !== currentMinute) {
+      sound.playTick();
+      prevMinuteRef.current = currentMinute;
+    }
+  }, [currentMinute]);
+
+  useEffect(() => {
+    if (!currentAssessment) return;
+    const curAction = currentAssessment.action?.controller_state;
+    if (prevActionRef.current && curAction && prevActionRef.current !== curAction) {
+      sound.playActionEscalation(curAction);
+    }
+    prevActionRef.current = curAction || null;
+
+    if (dominantKey && prevDominantRef.current && prevDominantRef.current !== dominantKey) {
+      sound.playHypothesisShift(dominantKey);
+    }
+    prevDominantRef.current = dominantKey;
+  }, [currentMinute, dominantKey, currentAssessment?.action?.controller_state]);
 
   if (loading || !currentAssessment) {
     return (
@@ -177,36 +210,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
     return assessments.slice(0, currentMinute + 1).map((a) => a.belief[key]);
   };
 
-  // Determine dominant hypothesis
-  const dominantKey = (Object.keys(currentAssessment.belief) as HypothesisKey[]).reduce((a, b) =>
-    currentAssessment.belief[a] > currentAssessment.belief[b] ? a : b
-  );
-
-  // Audio telemetry triggers
-  const prevMinuteRef = useRef(currentMinute);
-  const prevDominantRef = useRef<HypothesisKey | null>(null);
-  const prevActionRef = useRef<ActionType | null>(null);
-
-  useEffect(() => {
-    if (prevMinuteRef.current !== currentMinute) {
-      sound.playTick();
-      prevMinuteRef.current = currentMinute;
-    }
-  }, [currentMinute]);
-
-  useEffect(() => {
-    if (!currentAssessment) return;
-    const curAction = currentAssessment.action.controller_state;
-    if (prevActionRef.current && prevActionRef.current !== curAction) {
-      sound.playActionEscalation(curAction);
-    }
-    prevActionRef.current = curAction;
-
-    if (prevDominantRef.current && prevDominantRef.current !== dominantKey) {
-      sound.playHypothesisShift(dominantKey);
-    }
-    prevDominantRef.current = dominantKey;
-  }, [currentMinute, dominantKey, currentAssessment?.action?.controller_state]);
 
   return (
     <div className="max-w-[1600px] mx-auto px-4 py-4 space-y-4">
