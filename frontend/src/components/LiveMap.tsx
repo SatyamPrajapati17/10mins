@@ -41,7 +41,7 @@ function createGatewayIcon(color: string, label: string) {
   return L.divIcon({
     className: 'custom-gateway-icon',
     html: `
-      <div style="background-color: #211A15; border: 2px solid ${color}; color: #F5EFE8; border-radius: 6px; padding: 2px 6px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: bold; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.6); white-space: nowrap;">
+      <div style="background-color: var(--bg-raised); border: 2px solid ${color}; color: var(--text-primary); border-radius: 6px; padding: 2px 6px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: bold; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); white-space: nowrap;">
         <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background-color: ${color};"></span>
         <span>${label}</span>
       </div>
@@ -230,7 +230,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({ currentBelief, onOpenSourceHea
             <span>Incident Zone (Colored by Hypothesis)</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded border border-[#8B5E3C] bg-raised" />
+            <span className="w-2.5 h-2.5 rounded border border-accent bg-raised" />
             <span>Telemetry Gateway (Click for Health)</span>
           </div>
         </div>

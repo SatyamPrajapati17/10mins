@@ -217,9 +217,9 @@ export const Metrics: React.FC = () => {
                   <th className="py-2 px-3">STATUS</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#33281F]">
+              <tbody className="divide-y divide-subtle-border">
                 <tr className="bg-accent/10 font-bold text-cream">
-                  <td className="py-2 px-3 text-[#B07A4F]">FIRST 10 Decision Engine</td>
+                  <td className="py-2 px-3 text-accent-light">FIRST 10 Decision Engine</td>
                   <td className="py-2 px-3 text-data-teal tabular-nums">{evalResults.comparison.first10_engine.avg_cost_per_episode}</td>
                   <td className="py-2 px-3 tabular-nums">{evalResults.comparison.first10_engine.reversals}</td>
                   <td className="py-2 px-3 tabular-nums">{evalResults.comparison.first10_engine.false_escalations}</td>

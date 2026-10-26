@@ -70,7 +70,7 @@ export const BeliefCard: React.FC<BeliefCardProps> = ({
   return (
     <div
       className={`relative bg-surface border rounded-lg p-3.5 transition-all duration-150 ${
-        isDominant ? 'border-accent shadow-[0_0_12px_rgba(139,94,60,0.15)] ring-1 ring-accent/30' : 'border-subtle-border hover:border-[#8B5E3C]/50'
+        isDominant ? 'border-accent shadow-[0_0_12px_rgba(139,94,60,0.15)] ring-1 ring-accent/30' : 'border-subtle-border hover:border-accent/50'
       }`}
       onMouseEnter={() => setShowPopover(true)}
       onMouseLeave={() => setShowPopover(false)}

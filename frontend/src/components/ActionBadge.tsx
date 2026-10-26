@@ -135,7 +135,7 @@ export const ActionBadge: React.FC<ActionBadgeProps> = ({
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className={`font-semibold ${isLowest ? 'text-[#B07A4F]' : 'text-muted'}`}>{act}</span>
+                  <span className={`font-semibold ${isLowest ? 'text-accent-light' : 'text-muted'}`}>{act}</span>
                   {isCurrent && (
                     <span className="text-[9px] px-1 py-0.2 bg-cream/10 rounded text-cream">ACT</span>
                   )}
@@ -143,7 +143,7 @@ export const ActionBadge: React.FC<ActionBadgeProps> = ({
                 <div className="h-6 w-full bg-base rounded flex items-end overflow-hidden p-0.5">
                   <div
                     className={`w-full rounded-sm transition-all duration-300 ${
-                      isLowest ? 'bg-[#B07A4F]' : 'bg-muted/40'
+                      isLowest ? 'bg-accent' : 'bg-muted/40'
                     }`}
                     style={{ height: `${heightPct}%` }}
                   />

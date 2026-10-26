@@ -51,7 +51,7 @@ export const WeatherCard: React.FC<WeatherCardProps> = ({ lat, lon }) => {
     <div className="bg-surface border border-subtle-border rounded-lg p-3 text-cream">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono tracking-wider px-1.5 py-0.5 rounded bg-accent/20 border border-accent/40 text-[#B07A4F] font-semibold">
+          <span className="text-[10px] font-mono tracking-wider px-1.5 py-0.5 rounded bg-accent/20 border border-accent/40 text-accent-light font-semibold">
             LIVE
           </span>
           <span className="text-xs font-medium text-muted flex items-center gap-1">

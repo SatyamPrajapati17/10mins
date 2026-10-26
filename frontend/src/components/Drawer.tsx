@@ -51,7 +51,7 @@ export const Drawer: React.FC<DrawerProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="text-muted hover:text-cream p-1 rounded hover:bg-[#33281F] transition-colors"
+              className="text-muted hover:text-cream p-1 rounded hover:bg-subtle-border transition-colors"
               title="Close drawer (Esc)"
             >
               <X className="w-5 h-5" />
