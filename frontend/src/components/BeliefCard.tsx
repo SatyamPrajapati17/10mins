@@ -69,21 +69,30 @@ export const BeliefCard: React.FC<BeliefCardProps> = ({
 
   return (
     <div
-      className={`relative bg-surface border rounded-lg p-3.5 transition-all duration-150 ${
-        isDominant ? 'border-accent shadow-[0_0_12px_rgba(139,94,60,0.15)] ring-1 ring-accent/30' : 'border-subtle-border hover:border-accent/50'
+      className={`relative bg-surface border rounded-lg p-3.5 transition-all duration-200 overflow-hidden ${
+        isDominant
+          ? 'border-2 border-accent ring-1 ring-accent/40'
+          : 'border-subtle-border hover:border-accent/40'
       }`}
+      style={isDominant ? { boxShadow: '0 0 16px var(--accent-glow)' } : {}}
       onMouseEnter={() => setShowPopover(true)}
       onMouseLeave={() => setShowPopover(false)}
       tabIndex={0}
       onFocus={() => setShowPopover(true)}
       onBlur={() => setShowPopover(false)}
     >
+      {isDominant && <div className="absolute top-0 left-0 right-0 h-[2px] bg-accent" />}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <div className="p-1 rounded bg-raised border border-subtle-border" style={{ color: cfg.color }}>
             <Icon className="w-4 h-4" />
           </div>
           <span className="text-xs font-semibold tracking-wider uppercase text-cream">{label}</span>
+          {isDominant && (
+            <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-accent/20 border border-accent/40 text-accent-light">
+              DOMINANT
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-1.5">
           <div className="text-[11px] font-mono flex items-center">

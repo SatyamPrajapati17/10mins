@@ -184,7 +184,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
   return (
     <div className="max-w-[1600px] mx-auto px-4 py-4 space-y-4">
       {/* ================= TOP OPERATIONAL BAR ================= */}
-      <div className="bg-surface border border-subtle-border rounded-lg p-3 flex items-center justify-between gap-4 font-mono text-xs">
+      <div className="bg-surface border border-subtle-border rounded-lg p-3 flex items-center justify-between gap-4 font-mono text-xs relative overflow-hidden transition-all duration-200">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent opacity-90" />
         {/* Left: Episode Picker & Meta */}
         <div className="flex items-center gap-3">
           <label className="text-muted text-[11px] uppercase">EPISODE:</label>
@@ -194,7 +195,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
               setSelectedEpisodeId(e.target.value);
               loadAssessments(e.target.value);
             }}
-            className="bg-raised border border-subtle-border text-cream px-2.5 py-1 rounded text-xs focus:outline-none focus:border-accent"
+            className="bg-raised border border-subtle-border text-cream px-2.5 py-1 rounded text-xs focus:outline-none focus:border-accent transition-colors"
           >
             {episodes.map((ep) => (
               <option key={ep.id} value={ep.id}>
@@ -230,7 +231,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
             </button>
             <button
               onClick={() => setIsPlaying(!isPlaying)}
-              className="px-3 py-1 bg-accent hover:bg-accent-light text-cream rounded font-bold flex items-center gap-1"
+              className="px-3.5 py-1 bg-accent hover:bg-accent-light text-white rounded font-bold flex items-center gap-1.5 shadow-md transition-all"
+              style={{ boxShadow: '0 2px 10px var(--accent-glow)' }}
               title="Play / Pause (Space)"
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
@@ -248,7 +250,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
           {/* Minute Progress Indicator */}
           <div className="flex items-center gap-1.5 px-3 py-1 rounded bg-raised border border-subtle-border">
             <span className="text-muted">MINUTE:</span>
-            <span className="font-bold text-cream text-sm tabular-nums">
+            <span className="font-bold text-accent-light text-sm tabular-nums">
               {String(currentMinute).padStart(2, '0')}/{String(assessments.length - 1).padStart(2, '0')}
             </span>
           </div>
@@ -259,7 +261,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
               <button
                 key={s}
                 onClick={() => setSpeed(s)}
-                className={`px-2 py-0.5 rounded ${speed === s ? 'bg-accent text-cream font-bold' : 'text-muted'}`}
+                className={`px-2 py-0.5 rounded transition-all ${
+                  speed === s ? 'bg-accent text-white font-bold shadow-sm' : 'text-muted hover:text-cream'
+                }`}
+                style={speed === s ? { boxShadow: '0 1px 6px var(--accent-glow)' } : {}}
               >
                 {s}x
               </button>
@@ -271,7 +276,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => setActiveDrawer('evidence')}
-            className="px-2.5 py-1 rounded bg-raised border border-subtle-border hover:border-accent text-cream text-xs flex items-center gap-1"
+            className="px-2.5 py-1 rounded bg-raised border border-subtle-border hover:border-accent hover:text-accent-light text-cream text-xs flex items-center gap-1 transition-all"
             title="Evidence List (E)"
           >
             <FileText className="w-3.5 h-3.5 text-accent-light" />

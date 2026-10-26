@@ -24,18 +24,18 @@ export const ThemeSelector: React.FC = () => {
       {/* Light / Dark Mode Toggle */}
       <button
         onClick={toggleMode}
-        className="p-1.5 rounded bg-surface border border-subtle-border hover:border-accent text-cream transition-colors flex items-center gap-1.5"
-        title={`Switch to ${mode === 'dark' ? 'Light' : 'Dark'} Mode`}
+        className="px-2.5 py-1.5 rounded bg-surface border border-subtle-border hover:border-accent text-cream transition-all flex items-center gap-1.5 shadow-sm"
+        title={`Current: ${mode.toUpperCase()} mode. Click to toggle to ${mode === 'dark' ? 'LIGHT' : 'DARK'} mode.`}
       >
         {mode === 'dark' ? (
           <>
             <Moon className="w-3.5 h-3.5 text-accent-light" />
-            <span className="text-[10px] uppercase font-bold text-muted hidden sm:inline">Dark</span>
+            <span className="text-[10px] uppercase font-bold text-cream">Dark</span>
           </>
         ) : (
           <>
             <Sun className="w-3.5 h-3.5 text-data-amber" />
-            <span className="text-[10px] uppercase font-bold text-muted hidden sm:inline">Light</span>
+            <span className="text-[10px] uppercase font-bold text-cream">Light</span>
           </>
         )}
       </button>
@@ -44,14 +44,14 @@ export const ThemeSelector: React.FC = () => {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="px-2 py-1.5 rounded bg-surface border border-subtle-border hover:border-accent text-cream transition-colors flex items-center gap-1.5"
+          className="px-2.5 py-1.5 rounded bg-surface border border-subtle-border hover:border-accent text-cream transition-all flex items-center gap-1.5 shadow-sm"
           title="Change theme color palette"
         >
           <span
             className="w-2.5 h-2.5 rounded-full border border-subtle-border shadow-sm flex-shrink-0"
-            style={{ backgroundColor: activeColorOption.main }}
+            style={{ backgroundColor: activeColorOption.main, boxShadow: '0 0 6px var(--accent-glow)' }}
           />
-          <span className="text-[10px] uppercase font-bold text-muted hidden md:inline">
+          <span className="text-[10px] uppercase font-bold text-cream">
             {activeColorOption.label}
           </span>
           <ChevronDown className="w-3 h-3 text-muted" />

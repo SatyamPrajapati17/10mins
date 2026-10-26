@@ -10,7 +10,8 @@ interface WhyPanelProps {
 
 export const WhyPanel: React.FC<WhyPanelProps> = ({ explanation, minute }) => {
   return (
-    <div className="bg-surface border border-subtle-border rounded-lg p-3 text-cream">
+    <div className="bg-surface border border-subtle-border rounded-lg p-3 text-cream relative overflow-hidden transition-all duration-200">
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent opacity-80" />
       <div className="flex items-center justify-between mb-3 border-b border-subtle-border pb-2">
         <div className="flex items-center gap-2">
           <HelpCircle className="w-4 h-4 text-accent-light" />

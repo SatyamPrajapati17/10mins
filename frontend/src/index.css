@@ -15,15 +15,32 @@
   --accent-main: #8B5E3C;
   --accent-light: #B07A4F;
   --accent-dark: #67442B;
+  --accent-glow: rgba(139, 94, 60, 0.35);
+  --accent-surface-tint: rgba(255, 255, 255, 0.02);
 }
 
-:root.light {
-  --bg-base: #F6F8FA;
+:root.light,
+html.light,
+body.light,
+[data-theme="light"] {
+  --bg-base: #F8F6F2;
   --bg-surface: #FFFFFF;
-  --bg-raised: #EEF2F6;
-  --border-subtle: #D5DCE4;
-  --text-primary: #101820;
-  --text-muted: #5A6A7E;
+  --bg-raised: #EFEAE2;
+  --border-subtle: #D8CFC4;
+  --text-primary: #1E1B18;
+  --text-muted: #665C54;
+}
+
+:root.dark,
+html.dark,
+body.dark,
+[data-theme="dark"] {
+  --bg-base: #0D0B0A;
+  --bg-surface: #17120F;
+  --bg-raised: #211A15;
+  --border-subtle: #33281F;
+  --text-primary: #F5EFE8;
+  --text-muted: #A89684;
 }
 
 body {
@@ -34,7 +51,7 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-feature-settings: 'tnum' 1, 'cv02' 1, 'cv03' 1, 'cv04' 1;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
 /* Tabular numerals for data stability */
@@ -65,18 +82,25 @@ body {
 .leaflet-container {
   background: var(--bg-surface) !important;
   font-family: 'Inter', sans-serif !important;
+  transition: filter 250ms ease;
 }
 
-:root.dark .leaflet-tile {
+:root.dark .leaflet-tile,
+html.dark .leaflet-tile,
+[data-theme="dark"] .leaflet-tile {
   filter: brightness(0.7) invert(1) contrast(1.8) hue-rotate(180deg) saturate(0.3);
 }
 
-:root.light .leaflet-tile {
+:root.light .leaflet-tile,
+html.light .leaflet-tile,
+[data-theme="light"] .leaflet-tile {
   filter: none;
 }
 
 :root.dark .leaflet-popup-content-wrapper,
-:root.dark .leaflet-popup-tip {
+:root.dark .leaflet-popup-tip,
+html.dark .leaflet-popup-content-wrapper,
+html.dark .leaflet-popup-tip {
   background: #211A15 !important;
   color: #F5EFE8 !important;
   border: 1px solid #33281F !important;
@@ -85,7 +109,9 @@ body {
 }
 
 :root.light .leaflet-popup-content-wrapper,
-:root.light .leaflet-popup-tip {
+:root.light .leaflet-popup-tip,
+html.light .leaflet-popup-content-wrapper,
+html.light .leaflet-popup-tip {
   background: #FFFFFF !important;
   color: #101820 !important;
   border: 1px solid #D5DCE4 !important;

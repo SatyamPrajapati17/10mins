@@ -188,7 +188,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({ currentBelief, onOpenSourceHea
               ? '#B48CF2'
               : currentBelief.cascade > 0.40
               ? '#FF6B5E'
-              : '#8B5E3C';
+              : 'var(--accent-main)';
 
             return (
               <Marker

@@ -31,7 +31,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Logo and Product Title */}
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded bg-gradient-to-br from-accent-light to-accent flex items-center justify-center text-cream font-mono font-bold text-sm border border-accent/40 shadow-sm">
+            <div
+              className="w-8 h-8 rounded flex items-center justify-center text-white font-mono font-bold text-sm border border-accent/40 shadow-sm transition-all"
+              style={{
+                background: 'linear-gradient(135deg, var(--accent-light), var(--accent-main))',
+                boxShadow: '0 2px 10px var(--accent-glow)'
+              }}
+            >
               F10
             </div>
             <div>
@@ -50,7 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => onSelectTab('dashboard')}
               className={`px-3 py-1.5 rounded text-xs font-mono font-semibold flex items-center gap-1.5 transition-all ${
                 currentTab === 'dashboard'
-                  ? 'bg-raised text-cream border border-subtle-border shadow-sm'
+                  ? 'bg-accent/15 text-cream border border-accent/40 shadow-sm ring-1 ring-accent/20'
                   : 'text-muted hover:text-cream'
               }`}
             >
@@ -118,9 +124,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => onSwitchUser(r)}
                   className={`px-2 py-0.5 rounded transition-all ${
                     isSelected
-                      ? 'bg-accent text-cream font-bold shadow-sm'
+                      ? 'bg-accent text-white font-bold shadow-sm'
                       : 'text-muted hover:text-cream'
                   }`}
+                  style={isSelected ? { boxShadow: '0 1px 6px var(--accent-glow)' } : {}}
                   title={`Switch active demo session to ${r}`}
                 >
                   {shortNames[r]}

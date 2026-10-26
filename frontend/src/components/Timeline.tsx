@@ -35,7 +35,8 @@ export const Timeline: React.FC<TimelineProps> = ({
   }));
 
   return (
-    <div className="bg-surface border border-subtle-border rounded-lg p-3 text-cream">
+    <div className="bg-surface border border-subtle-border rounded-lg p-3 text-cream relative overflow-hidden transition-all duration-200">
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent opacity-80" />
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-mono uppercase tracking-wider text-muted">
           BELIEF TRAJECTORY &amp; ACTION RIBBON (MINUTES 00 - {Math.max(0, assessments.length - 1)})
@@ -104,10 +105,10 @@ export const Timeline: React.FC<TimelineProps> = ({
             />
             <ReferenceLine
               x={currentMinute}
-              stroke="#F5EFE8"
+              stroke="var(--accent-light)"
               strokeWidth={2}
               strokeDasharray="3 3"
-              label={{ value: `T=${currentMinute}`, fill: '#F5EFE8', fontSize: 10, position: 'top' }}
+              label={{ value: `T=${currentMinute}`, fill: 'var(--accent-light)', fontSize: 10, position: 'top' }}
             />
             {faultMarkers.map((fm, idx) => (
               <ReferenceLine
