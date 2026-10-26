@@ -1,9 +1,10 @@
 // src/components/Navbar.tsx
-import React from 'react';
-import { Shield, Activity, GitFork, BarChart3, UserCheck, LogOut, PlayCircle, HelpCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Shield, Activity, GitFork, BarChart3, UserCheck, LogOut, PlayCircle, HelpCircle, Volume2, VolumeX } from 'lucide-react';
 import { User, UserRole } from '../lib/types';
 import { Banner } from './Banner';
 import { ThemeSelector } from './ThemeSelector';
+import { sound } from '../lib/audio';
 
 interface NavbarProps {
   currentTab: 'dashboard' | 'lab' | 'metrics';
@@ -22,6 +23,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLogout,
   onQuickDemo
 }) => {
+  const [soundActive, setSoundActive] = useState(() => sound.isEnabled());
   return (
     <header className="sticky top-0 z-40 bg-base border-b border-subtle-border">
       {/* Persistent Banner */}
@@ -105,6 +107,26 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Theme & Color Palette Selector */}
           <ThemeSelector />
+
+          {/* Tactical Audio Telemetry Toggle */}
+          <button
+            onClick={() => {
+              const newState = sound.toggle();
+              setSoundActive(newState);
+            }}
+            className={`p-1.5 rounded bg-surface border transition-colors flex items-center gap-1 font-mono text-xs ${
+              soundActive
+                ? 'border-subtle-border hover:border-accent text-cream'
+                : 'border-data-coral/40 text-data-coral bg-data-coral/10'
+            }`}
+            title={soundActive ? 'Tactical Audio: ON (Click to mute)' : 'Tactical Audio: MUTED (Click to enable)'}
+          >
+            {soundActive ? (
+              <Volume2 className="w-3.5 h-3.5 text-accent-light" />
+            ) : (
+              <VolumeX className="w-3.5 h-3.5 text-data-coral" />
+            )}
+          </button>
 
           {/* Demo User Fast Role Switcher */}
           <div className="flex items-center bg-surface border border-subtle-border rounded p-0.5 text-[11px] font-mono">

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { X, ShieldAlert, CheckCircle, XCircle, Clock, AlertTriangle, UserCheck } from 'lucide-react';
 import { ActionType, AuthorizationRequest, User } from '../lib/types';
 import { requestAuthorizationApi, decideAuthorizationApi } from '../lib/api';
-import { sound } from '../lib/sound';
+import { sound } from '../lib/audio';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -62,12 +62,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           episodeId
         }
       });
-      sound.playTactileClick();
       setSuccessMsg('Authorization request submitted to supervisor queue.');
       setJustification('');
+      sound.playActionEscalation('PREPARE');
       onRefreshAuths();
       setActiveTab('queue');
     } catch (err: any) {
+      sound.playAuthReject();
       setErrorMsg(err.message || 'Failed to submit authorization request.');
     } finally {
       setSubmitting(false);
@@ -76,6 +77,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   const handleDecision = async (authId: string, decision: 'approve' | 'reject') => {
     if (!decisionReason.trim()) {
+      sound.playAuthReject();
       setErrorMsg('Decision reason is required to record official authorization.');
       return;
     }
@@ -86,11 +88,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     try {
       await decideAuthorizationApi(authId, decision, decisionReason);
-      sound.playAuthConfirmation(decision === 'approve');
+      if (decision === 'approve') {
+        sound.playAuthSuccess();
+      } else {
+        sound.playAuthReject();
+      }
       setSuccessMsg(`Request marked as ${decision.toUpperCase()}. Official record saved.`);
       setDecisionReason('');
       onRefreshAuths();
     } catch (err: any) {
+      sound.playAuthReject();
       // Handles 403 two_person_rule error specifically
       setErrorMsg(err.message || 'Decision failed.');
     } finally {

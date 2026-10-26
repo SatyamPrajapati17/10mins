@@ -4,7 +4,8 @@ import {
   Play, Pause, SkipForward, RotateCcw, ShieldAlert, FileText, Layers,
   Activity, Clock, AlertTriangle, Radio, RefreshCw, ChevronRight, CheckCircle, CloudRain
 } from 'lucide-react';
-import { Episode, Assessment, User, AuthorizationRequest, AuditEntry, HypothesisKey } from '../lib/types';
+import { Episode, Assessment, User, AuthorizationRequest, AuditEntry, HypothesisKey, ActionType } from '../lib/types';
+import { sound } from '../lib/audio';
 import {
   fetchEpisodesApi, fetchAssessmentsApi, fetchAuthorizationsApi,
   fetchAuditApi, createEpisodeApi
@@ -19,7 +20,6 @@ import { LiveMap } from '../components/LiveMap';
 import { WeatherCard } from '../components/WeatherCard';
 import { Drawer } from '../components/Drawer';
 import { AuthModal } from '../components/AuthModal';
-import { sound } from '../lib/sound';
 
 interface DashboardProps {
   currentUser: User | null;
@@ -177,30 +177,35 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
     return assessments.slice(0, currentMinute + 1).map((a) => a.belief[key]);
   };
 
+  // Determine dominant hypothesis
   const dominantKey = (Object.keys(currentAssessment.belief) as HypothesisKey[]).reduce((a, b) =>
     currentAssessment.belief[a] > currentAssessment.belief[b] ? a : b
   );
 
-  // Audio tracking refs for hypothesis shifts and action escalations
+  // Audio telemetry triggers
+  const prevMinuteRef = useRef(currentMinute);
   const prevDominantRef = useRef<HypothesisKey | null>(null);
-  const prevActionRef = useRef<string | null>(null);
+  const prevActionRef = useRef<ActionType | null>(null);
+
+  useEffect(() => {
+    if (prevMinuteRef.current !== currentMinute) {
+      sound.playTick();
+      prevMinuteRef.current = currentMinute;
+    }
+  }, [currentMinute]);
 
   useEffect(() => {
     if (!currentAssessment) return;
-    const currentDominant = dominantKey;
-    const currentAction = currentAssessment.action.controller_state;
-
-    // Dominant hypothesis shift sound
-    if (prevDominantRef.current && prevDominantRef.current !== currentDominant) {
-      sound.playHypothesisShift(currentDominant);
+    const curAction = currentAssessment.action.controller_state;
+    if (prevActionRef.current && prevActionRef.current !== curAction) {
+      sound.playActionEscalation(curAction);
     }
-    prevDominantRef.current = currentDominant;
+    prevActionRef.current = curAction;
 
-    // Action escalation / de-escalation sound
-    if (prevActionRef.current && prevActionRef.current !== currentAction) {
-      sound.playActionTransition(currentAction as any);
+    if (prevDominantRef.current && prevDominantRef.current !== dominantKey) {
+      sound.playHypothesisShift(dominantKey);
     }
-    prevActionRef.current = currentAction;
+    prevDominantRef.current = dominantKey;
   }, [currentMinute, dominantKey, currentAssessment?.action?.controller_state]);
 
   return (
@@ -253,30 +258,21 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 bg-base p-1 rounded border border-subtle-border">
             <button
-              onClick={() => {
-                setCurrentMinute(0);
-                sound.playTactileClick();
-              }}
+              onClick={() => setCurrentMinute(0)}
               className="p-1 text-muted hover:text-cream rounded hover:bg-raised"
               title="Reset to Minute 0 (⏮)"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => {
-                setCurrentMinute((m) => Math.max(0, m - 1));
-                sound.playTactileClick();
-              }}
+              onClick={() => setCurrentMinute((m) => Math.max(0, m - 1))}
               className="px-2 py-1 text-muted hover:text-cream rounded hover:bg-raised text-[11px]"
               title="Step Backward (J)"
             >
               J
             </button>
             <button
-              onClick={() => {
-                setIsPlaying(!isPlaying);
-                sound.playTactileClick();
-              }}
+              onClick={() => setIsPlaying(!isPlaying)}
               className="px-3.5 py-1 bg-accent hover:bg-accent-light text-white rounded font-bold flex items-center gap-1.5 shadow-md transition-all"
               style={{ boxShadow: '0 2px 10px var(--accent-glow)' }}
               title="Play / Pause (Space)"
@@ -285,10 +281,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
               <span>{isPlaying ? 'PAUSE' : 'PLAY'}</span>
             </button>
             <button
-              onClick={() => {
-                setCurrentMinute((m) => Math.min(assessments.length - 1, m + 1));
-                sound.playTactileClick();
-              }}
+              onClick={() => setCurrentMinute((m) => Math.min(assessments.length - 1, m + 1))}
               className="px-2 py-1 text-muted hover:text-cream rounded hover:bg-raised text-[11px]"
               title="Step Forward (K)"
             >
@@ -309,10 +302,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
             {[1, 2, 5].map((s) => (
               <button
                 key={s}
-                onClick={() => {
-                  setSpeed(s);
-                  sound.playTactileClick();
-                }}
+                onClick={() => setSpeed(s)}
                 className={`px-2 py-0.5 rounded transition-all ${
                   speed === s ? 'bg-accent text-white font-bold shadow-sm' : 'text-muted hover:text-cream'
                 }`}

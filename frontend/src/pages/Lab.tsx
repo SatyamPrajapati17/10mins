@@ -9,7 +9,7 @@ import {
 } from 'recharts';
 import { runTwinTestApi, injectFaultApi, fetchEpisodesApi } from '../lib/api';
 import { Episode } from '../lib/types';
-import { sound } from '../lib/sound';
+import { sound } from '../lib/audio';
 
 interface LabProps {
   onSelectEpisode?: (episodeId: string) => void;
@@ -32,16 +32,14 @@ export const Lab: React.FC<LabProps> = ({ onSelectEpisode }) => {
   const [faultResult, setFaultResult] = useState<any>(null);
 
   const handleRunTwin = async () => {
-    sound.playTactileClick();
     setTwinLoading(true);
     setTwinResult(null);
     try {
       const res = await runTwinTestApi(twinPrefix, twinSplit, twinSeed);
       setTwinResult(res);
-      if (res?.passed) {
-        sound.playAuthConfirmation(true);
-      }
+      sound.playAuthSuccess();
     } catch (err: any) {
+      sound.playAuthReject();
       alert(`Twin test error: ${err.message}`);
     } finally {
       setTwinLoading(false);
@@ -49,13 +47,14 @@ export const Lab: React.FC<LabProps> = ({ onSelectEpisode }) => {
   };
 
   const handleInjectFault = async () => {
-    sound.playFaultTriggered();
     setFaultLoading(true);
     setFaultResult(null);
     try {
       const res = await injectFaultApi(targetEpisodeId, faultType, faultTarget, faultMinute);
       setFaultResult(res);
+      sound.playFaultInjected();
     } catch (err: any) {
+      sound.playAuthReject();
       alert(`Fault injection error: ${err.message}`);
     } finally {
       setFaultLoading(false);

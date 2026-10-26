@@ -1,13 +1,11 @@
 // src/components/ThemeSelector.tsx
 import React, { useState, useRef, useEffect } from 'react';
-import { Sun, Moon, Palette, ChevronDown, Check, Volume2, VolumeX } from 'lucide-react';
+import { Sun, Moon, Palette, ChevronDown, Check } from 'lucide-react';
 import { useTheme, THEME_COLOR_OPTIONS, ThemeColor } from '../lib/ThemeContext';
-import { sound } from '../lib/sound';
 
 export const ThemeSelector: React.FC = () => {
   const { mode, color, activeColorOption, toggleMode, setColor } = useTheme();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(() => sound.isEnabled());
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on outside click
@@ -23,28 +21,6 @@ export const ThemeSelector: React.FC = () => {
 
   return (
     <div className="flex items-center gap-1.5 font-mono text-xs">
-      {/* Tactical Audio Toggle */}
-      <button
-        onClick={() => {
-          const nextState = sound.toggle();
-          setSoundEnabled(nextState);
-        }}
-        className={`px-2 py-1.5 rounded bg-surface border transition-all flex items-center gap-1 shadow-sm ${
-          soundEnabled
-            ? 'border-accent text-cream hover:border-accent-light'
-            : 'border-subtle-border text-muted hover:text-cream'
-        }`}
-        title={`Tactical Audio: ${soundEnabled ? 'ON (Click to Mute)' : 'MUTED (Click to Enable)'}`}
-      >
-        {soundEnabled ? (
-          <Volume2 className="w-3.5 h-3.5 text-accent-light" />
-        ) : (
-          <VolumeX className="w-3.5 h-3.5 text-muted" />
-        )}
-        <span className="text-[10px] uppercase font-bold hidden sm:inline">
-          {soundEnabled ? 'SND' : 'MUTE'}
-        </span>
-      </button>
       {/* Light / Dark Mode Toggle */}
       <button
         onClick={toggleMode}
