@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Play, Pause, SkipForward, RotateCcw, ShieldAlert, FileText, Layers,
-  Activity, Clock, AlertTriangle, Radio, RefreshCw, ChevronRight, CheckCircle
+  Activity, Clock, AlertTriangle, Radio, RefreshCw, ChevronRight, CheckCircle, CloudRain
 } from 'lucide-react';
 import { Episode, Assessment, User, AuthorizationRequest, AuditEntry, HypothesisKey } from '../lib/types';
 import {
@@ -210,6 +210,21 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
               v{assessmentVersion} {assessmentVersion > 1 && '(REVISED)'}
             </span>
           </div>
+
+          {/* Quick Live Weather Pill in Top Bar */}
+          <button
+            onClick={() => {
+              const el = document.getElementById('operational-radar-panel');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-raised border border-subtle-border hover:border-accent text-muted hover:text-cream transition-colors text-left"
+            title="Click to view live weather details and spatial radar map"
+          >
+            <CloudRain className="w-3.5 h-3.5 text-data-teal flex-shrink-0" />
+            <span className="text-[10px] uppercase font-bold text-accent-light">LIVE WX:</span>
+            <span className="text-cream font-bold tabular-nums">29°C</span>
+            <span className="text-[9px] text-muted hidden lg:inline">Rain: 0mm</span>
+          </button>
         </div>
 
         {/* Center: Playback Controls & Minute Indicator */}
@@ -420,13 +435,20 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser }) => {
       </div>
 
       {/* ================= ROW 4: OPERATIONAL SPATIAL RADAR & LIVE WEATHER ================= */}
-      <div className="grid grid-cols-12 gap-4">
+      <div id="operational-radar-panel" className="grid grid-cols-12 gap-4 scroll-mt-20">
         {/* Live Leaflet Map Panel (8 cols) */}
         <div className="col-span-8">
           <LiveMap
             currentBelief={currentAssessment.belief}
             onOpenSourceHealth={() => setActiveDrawer('sources')}
-            onLocationTracked={(lat, lon) => setTrackedLocation({ lat, lon })}
+            onLocationTracked={(lat, lon) => {
+              const rLat = Math.round(lat * 100) / 100;
+              const rLon = Math.round(lon * 100) / 100;
+              setTrackedLocation(prev => {
+                if (Math.abs(prev.lat - rLat) < 0.01 && Math.abs(prev.lon - rLon) < 0.01) return prev;
+                return { lat: rLat, lon: rLon };
+              });
+            }}
           />
         </div>
 

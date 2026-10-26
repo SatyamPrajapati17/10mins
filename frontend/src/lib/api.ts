@@ -2,7 +2,9 @@
 
 import { Episode, Assessment, AuthorizationRequest, AuditEntry, LiveWeatherData, User } from './types';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = typeof window !== 'undefined' && window.location.hostname
+  ? `http://${window.location.hostname}:8000`
+  : 'http://localhost:8000';
 
 function getAuthHeader(): Record<string, string> {
   const token = localStorage.getItem('first10_token');
